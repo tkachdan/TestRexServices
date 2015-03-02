@@ -3,6 +3,7 @@ package persistence.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * Created by dan on 2.3.15.
@@ -13,7 +14,7 @@ public class Position {
     private int id;
     @Column(name = "lon")
     private double lon;
-    @Column(name = "lon")
+    @Column(name = "lat")
     private double lat;
     @Column(name = "time")
     private java.util.Date time;
@@ -21,6 +22,18 @@ public class Position {
     private int speed;
     @Column(name = "alt")
     private int alt;
+
+    public Position() {
+    }
+
+    public Position(int id, double lon, double lat, Date time, int speed, int alt) {
+        this.id = id;
+        this.lon = lon;
+        this.lat = lat;
+        this.time = time;
+        this.speed = speed;
+        this.alt = alt;
+    }
 
     public double getLon() {
         return lon;
@@ -60,5 +73,17 @@ public class Position {
 
     public void setAlt(int alt) {
         this.alt = alt;
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "id=" + id +
+                ", lon=" + lon +
+                ", lat=" + lat +
+                ", time=" + time +
+                ", speed=" + speed +
+                ", alt=" + alt +
+                '}';
     }
 }

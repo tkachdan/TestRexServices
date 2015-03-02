@@ -13,6 +13,14 @@ public class Device {
     @Id
     private String id;
 
+    public Device(String id) {
+        this.id = id;
+    }
+
+
+
+    public Device() {
+    }
 
     public String getId() {
         return id;
@@ -20,5 +28,12 @@ public class Device {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id='" + id + '\'' +
+                '}';
     }
 }

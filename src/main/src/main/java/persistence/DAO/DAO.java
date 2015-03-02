@@ -10,7 +10,7 @@ import java.util.List;
 public interface DAO<T> {
     public boolean createObject(T t);
 
-    public T readObjectById(int id, Class<T> tClass);
+    public T getObjectById(int id, Class<T> tClass);
 
     public boolean updateObject(T t);
 

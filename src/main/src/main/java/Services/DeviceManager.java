@@ -12,4 +12,6 @@ public interface DeviceManager {
      * zadaným identifikátorem v systému není
      */
     public Device getDevice(String id);
+
+    public boolean isDeviceExists(String deviceId);
 }

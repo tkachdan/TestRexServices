@@ -7,15 +7,15 @@ import java.util.List;
 /**
  * Created by dan on 2.3.15.
  */
-public class PositionDAO extends DAOImpl<Position> {
+public class PositionDAOImpl extends DAOImpl<Position> {
     @Override
     public boolean createObject(Position position) {
         return super.createObject(position);
     }
 
     @Override
-    public Position readObjectById(int id, Class<Position> positionClass) {
-        return super.readObjectById(id, positionClass);
+    public Position getObjectById(int id, Class<Position> positionClass) {
+        return super.getObjectById(id, positionClass);
     }
 
     @Override

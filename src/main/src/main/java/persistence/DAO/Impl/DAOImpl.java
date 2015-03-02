@@ -31,7 +31,7 @@ public abstract class DAOImpl<T> implements DAO<T> {
     }
 
     @Override
-    public T readObjectById(int id, Class<T> tClass) {
+    public T getObjectById(int id, Class<T> tClass) {
         Session session = HibernateService.getSession();
         session.beginTransaction();
 
@@ -69,7 +69,7 @@ public abstract class DAOImpl<T> implements DAO<T> {
     }
 
     public boolean isObjectInDatabase(int id, Class<T> tClass) {
-        if (this.readObjectById(id, tClass) == null)
+        if (this.getObjectById(id, tClass) == null)
             return false;
         else
             return true;

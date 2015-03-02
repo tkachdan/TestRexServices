@@ -1,7 +1,10 @@
-package Impl;
+package Services.Impl;
+
 import Services.DeviceManager;
 import Services.PacketReceiver;
 import Services.PositionManager;
+import persistence.model.Device;
+import persistence.model.Position;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,36 +14,27 @@ import java.util.List;
  * Created by dan on 2.3.15.
  */
 public class PacketReceiverImpl implements PacketReceiver {
-    String deviceId = "";
-    String type = "";
-    boolean idRead = false;
-    boolean isTypeRead = false;
-    double lat, lon, spd;
-    Date date;
-    private Date time;
-    int alt;
+    private String deviceId = "", type = "";
+    private boolean idRead = false, isTypeRead = false;
+    private double lat, lon, spd;
+    private Date date, time;
+    private int alt, zone, io;
 
-    int zone;
-    int io;
+    private DeviceManager deviceManager;
+    private PositionManager positionManager;
 
     @Override
     public void setDeviceManager(DeviceManager mngr) {
-
+        this.deviceManager = mngr;
     }
 
     @Override
     public void setPositionManager(PositionManager mngr) {
-
+        this.positionManager = mngr;
     }
 
     @Override
     public void receivePacket(String packet) {
-        //POS {lon};{lat};{date};{time};{spd};{alt}
-        //A57848;POS;14.609;49.896;140725;121518;22;505!
-
-        //GF  {zone};{io};{date};{time}
-        //A512;GF;6;1;140725;130000!
-
 
         if (!packet.startsWith("A") || !packet.endsWith("!")) {
             System.out.println("Bad packet");
@@ -58,24 +52,19 @@ public class PacketReceiverImpl implements PacketReceiver {
                 }
             }
             if (strList.size() != 8 && strList.size() != 6) {
+                positionManager.error("Bad packet", "Wrong format of the packet");
                 System.out.println("Bad packet");
                 return;
             } else {
                 deviceId = strList.get(0);
+                if (!deviceManager.isDeviceExists(deviceId)) return;
                 type = strList.get(1);
-                if (type.equals("POS")) {
-                    if (parsePos(strList)) return;
-                } else if (type.equals("GF")) {
-                    if (parseGf(strList)) return;
-                } else {
-                    System.out.println("Bad type");
-                    return;
-                }
-
+                if (isTypeCorrect(strList)) return;
             }
 
         }
-        if(type.equals("POS")) {
+        if (type.equals("POS")) {
+            Position position = new Position();
             System.out.println("\ndeviceId:" + deviceId);
             System.out.println("type:" + type);
             System.out.println("lon:" + lon);
@@ -85,7 +74,7 @@ public class PacketReceiverImpl implements PacketReceiver {
             System.out.println("spd:" + spd);
             System.out.println("alt:" + alt);
         }
-        if(type.equals("GF")){
+        if (type.equals("GF")) {
             System.out.println("\ndeviceId:" + deviceId);
             System.out.println("type:" + type);
             System.out.println("zone" + zone);
@@ -94,7 +83,18 @@ public class PacketReceiverImpl implements PacketReceiver {
             System.out.println("time:" + time.getTime());
 
         }
+    }
 
+    private boolean isTypeCorrect(List<String> strList) {
+        if (type.equals("POS")) {
+            if (parsePos(strList)) return true;
+        } else if (type.equals("GF")) {
+            if (parseGf(strList)) return true;
+        } else {
+            positionManager.error("Bad type", type);
+            return true;
+        }
+        return false;
     }
 
     private boolean parseGf(List<String> strList) {
@@ -103,9 +103,9 @@ public class PacketReceiverImpl implements PacketReceiver {
             zone = Integer.parseInt(strList.get(3));
             date = new Date(Long.parseLong(strList.get(4)));
             time = new Date(Long.parseLong(strList.get(5)));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
 
-            System.out.println("Bad packet");
+            positionManager.error("Bad data",io+" " + zone + " " + date +" " + time+" ");
             return true;
         }
         return false;
@@ -121,7 +121,8 @@ public class PacketReceiverImpl implements PacketReceiver {
             alt = Integer.parseInt(strList.get(7));
         } catch (NumberFormatException e) {
 
-            System.out.println("Bad packet");
+            positionManager.error("Bad data", lon + " " + lat + " " + date + " " + time + " " +
+                    spd + " " + alt);
             return true;
         }
         return false;
