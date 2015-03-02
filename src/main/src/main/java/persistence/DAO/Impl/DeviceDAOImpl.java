@@ -15,14 +15,9 @@ public class DeviceDAOImpl extends DAOImpl<Device> {
         return super.createObject(device);
     }
 
-
-
-
     public Device getObjectById(String id) {
         Session session = HibernateService.getSession();
         session.beginTransaction();
-
-
         Device device = (Device) session
                 .createQuery("from Device"  + " where id = :itemId")
                 .setString("itemId", id).uniqueResult();
@@ -30,7 +25,6 @@ public class DeviceDAOImpl extends DAOImpl<Device> {
         session.getTransaction().commit();
         session.close();
         return device;
-
     }
 
     @Override
@@ -44,10 +38,7 @@ public class DeviceDAOImpl extends DAOImpl<Device> {
     }
 
     public boolean isObjectInDatabase(String id) {
-        if (this.getObjectById(id) == null)
-            return false;
-        else
-            return true;
+        return this.getObjectById(id) != null;
     }
 
     @Override

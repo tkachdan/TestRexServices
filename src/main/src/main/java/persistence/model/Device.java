@@ -9,15 +9,12 @@ import javax.persistence.Id;
 
 @Entity
 public class Device {
-
     @Id
     private String id;
 
     public Device(String id) {
         this.id = id;
     }
-
-
 
     public Device() {
     }

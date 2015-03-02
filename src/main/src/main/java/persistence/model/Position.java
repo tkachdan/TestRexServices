@@ -2,6 +2,7 @@ package persistence.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 @Entity
 public class Position {
     @Id
+    @GeneratedValue
     private int id;
     @Column(name = "lon")
     private double lon;
